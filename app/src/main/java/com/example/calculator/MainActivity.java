@@ -1,10 +1,17 @@
 package com.example.calculator;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.graphics.Color;
+import android.graphics.Point;
 import android.os.Bundle;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.Button;
+import android.widget.GridLayout;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,72 +26,283 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        text = findViewById(R.id.text);
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        text = new TextView(this);
+        text.setWidth((int) (size.x * 0.94));
+        text.setHeight((int) (size.y * 0.6));
+        text.setGravity(Gravity.BOTTOM | Gravity.RIGHT);
+        text.setTextSize(34);
+        text.setShadowLayer(5, 2, 2, Color.GRAY);
+        //
+        Button button1 = new Button(this);
+        Button button2 = new Button(this);
+        Button button3 = new Button(this);
+        Button button4 = new Button(this);
+        Button button5 = new Button(this);
+        Button button6 = new Button(this);
+        Button button7 = new Button(this);
+        Button button8 = new Button(this);
+        Button button9 = new Button(this);
+        Button button0 = new Button(this);
+        Button button00 = new Button(this);
+        Button buttonPlus = new Button(this);
+        Button buttonMinus = new Button(this);
+        Button buttonMul = new Button(this);
+        Button buttonDiv = new Button(this);
+        Button buttonDot = new Button(this);
+        Button buttonOpen = new Button(this);
+        Button buttonClose = new Button(this);
+        Button buttonEq = new Button(this);
+        Button buttonDel = new Button(this);
+        //
+        button1.setText("1");
+        button2.setText("2");
+        button3.setText("3");
+        button4.setText("4");
+        button5.setText("5");
+        button6.setText("6");
+        button7.setText("7");
+        button8.setText("8");
+        button9.setText("9");
+        button0.setText("0");
+        button00.setText("00");
+        buttonPlus.setText("+");
+        buttonMinus.setText("-");
+        buttonMul.setText("*");
+        buttonDiv.setText("/");
+        buttonDot.setText(".");
+        buttonOpen.setText("(");
+        buttonClose.setText(")");
+        buttonEq.setText("=");
+        buttonDel.setText("←");
+        //
+        button1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Touch1();
+            }
+        });
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Touch2();
+            }
+        });
+        button3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Touch3();
+            }
+        });
+        button4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Touch4();
+            }
+        });
+        button5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Touch5();
+            }
+        });
+        button6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Touch6();
+            }
+        });
+        button7.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Touch7();
+            }
+        });
+        button8.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Touch8();
+            }
+        });
+        button9.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Touch9();
+            }
+        });
+        button0.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Touch0();
+            }
+        });
+        button00.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Touch00();
+            }
+        });
+        buttonPlus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TouchPlus();
+            }
+        });
+        buttonMinus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TouchMinus();
+            }
+        });
+        buttonMul.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TouchMultiply();
+            }
+        });
+        buttonDel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TouchDel();
+            }
+        });
+        buttonDiv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TouchDivide();
+            }
+        });
+        buttonDot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TouchDot();
+            }
+        });
+        buttonOpen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TouchOpen();
+            }
+        });
+        buttonClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TouchClose();
+            }
+        });
+        buttonEq.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TouchEqual();
+            }
+        });
+        //
+        ConstraintLayout layout = findViewById(R.id.lay);
+        layout.addView(text);
+        text.setX(size.x * 0.03f);
+        GridLayout gridLayout = new GridLayout(this);
+        gridLayout.setColumnCount(4);
+        layout.addView(gridLayout, size.x, (int) (size.y * 0.4));
+        gridLayout.addView(buttonOpen);
+        gridLayout.addView(buttonClose);
+        gridLayout.addView(buttonDel);
+        gridLayout.addView(buttonDiv);
+        gridLayout.addView(button7);
+        gridLayout.addView(button8);
+        gridLayout.addView(button9);
+        gridLayout.addView(buttonMul);
+        gridLayout.addView(button4);
+        gridLayout.addView(button5);
+        gridLayout.addView(button6);
+        gridLayout.addView(buttonPlus);
+        gridLayout.addView(button1);
+        gridLayout.addView(button2);
+        gridLayout.addView(button3);
+        gridLayout.addView(buttonMinus);
+        gridLayout.addView(button0);
+        gridLayout.addView(buttonDot);
+        gridLayout.addView(button00);
+        gridLayout.addView(buttonEq);
+        gridLayout.setY(size.y * 0.6f);
+        //
         ex = "";
         opened = 0;
         closed = 0;
         dotAdd = false;
     }
 
-    public void Touch1(View w){
+    public void Touch1() {
         text.append("1");
-        ex+="1";
+        ex += "1";
     }
-    public void Touch2(View w){
+
+    public void Touch2() {
         text.append("2");
-        ex+="2";
+        ex += "2";
     }
-    public void Touch3(View w){
+
+    public void Touch3() {
         text.append("3");
-        ex+="3";
+        ex += "3";
     }
-    public void Touch4(View w){
+
+    public void Touch4() {
         text.append("4");
-        ex+="4";
+        ex += "4";
     }
-    public void Touch5(View w){
+
+    public void Touch5() {
         text.append("5");
-        ex+="5";
+        ex += "5";
     }
-    public void Touch6(View w){
+
+    public void Touch6() {
         text.append("6");
-        ex+="6";
+        ex += "6";
     }
-    public void Touch7(View w){
+
+    public void Touch7() {
         text.append("7");
-        ex+="7";
+        ex += "7";
     }
-    public void Touch8(View w){
+
+    public void Touch8() {
         text.append("8");
-        ex+="8";
+        ex += "8";
     }
-    public void Touch9(View w){
+
+    public void Touch9() {
         text.append("9");
-        ex+="9";
+        ex += "9";
     }
-    public void Touch0(View w){
+
+    public void Touch0() {
         text.append("0");
-        ex+="0";
+        ex += "0";
     }
-    public void TouchOpen(View w){
-        if (ex.length()!=0) {
+
+    public void TouchOpen() {
+        if (ex.length() != 0) {
             char a = ex.charAt(ex.length() - 1);//Последний символ
-            if (a == '+' || a == '-' || a == '*' || a == '/'|| a == '(') {
+            if (a == '+' || a == '-' || a == '*' || a == '/' || a == '(') {
                 text.append("(");
-                ex+="(";
+                ex += "(";
                 opened++;
             }
-        }else {
+        } else {
             text.append("(");
-            ex+="(";
+            ex += "(";
             opened++;
         }
     }
-    public void TouchClose(View w){
-        if (ex.length()!=0) {
-            if (opened>closed) {
+
+    public void TouchClose() {
+        if (ex.length() != 0) {
+            if (opened > closed) {
                 char a = ex.charAt(ex.length() - 1);//Последний символ
-                if (a != '+' && a != '-' && a != '*' && a != '/'&& a != '(') {
+                if (a != '+' && a != '-' && a != '*' && a != '/' && a != '(') {
                     text.append(")");
                     ex += ")";
                     closed++;
@@ -92,74 +310,80 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-    public void Touch00(View w){
+
+    public void Touch00() {
         text.append("00");
-        ex+="00";
+        ex += "00";
     }
-    public void TouchPlus(View w){
-        if (ex.length()!=0) {
+
+    public void TouchPlus() {
+        if (ex.length() != 0) {
             char a = ex.charAt(ex.length() - 1);//Последний символ
-            if (a != '+' && a != '-' && a != '*' && a != '/'&& a != '('&&a != '.') {
+            if (a != '+' && a != '-' && a != '*' && a != '/' && a != '(' && a != '.') {
                 text.append("+");
-                ex+="+";
+                ex += "+";
                 dotAdd = false;
                 //добавляем сложение и даём возможность вновь ставить точку
             }
         }
     }
-    public void TouchMinus(View w){
-        if (ex.length()!=0) {
+
+    public void TouchMinus() {
+        if (ex.length() != 0) {
             char a = ex.charAt(ex.length() - 1);//Последний символ
-            if (a != '+' && a != '-' &&a != '.') {
+            if (a != '+' && a != '-' && a != '.') {
                 text.append("-");
-                ex+="-";
+                ex += "-";
                 dotAdd = false;
                 //добавляем вычитание и даём возможность вновь ставить точку
             }
         } else {
             //минус может стоять в самом начале перед числом
             text.append("-");
-            ex+="-";
+            ex += "-";
             dotAdd = false;
             //аналогично
         }
     }
-    public void TouchMultiply(View w){
-        if (ex.length()!=0) {
+
+    public void TouchMultiply() {
+        if (ex.length() != 0) {
             char a = ex.charAt(ex.length() - 1);//Последний символ
-            if (a != '+' && a != '-' && a != '*' && a != '/'&& a != '('&&a != '.') {
+            if (a != '+' && a != '-' && a != '*' && a != '/' && a != '(' && a != '.') {
                 text.append("*");
-                ex+="*";
+                ex += "*";
                 dotAdd = false;
                 //добавляем умножение и даём возможность вновь ставить точку
             }
         }
     }
-    public void TouchDivide(View w){
-        if (ex.length()!=0) {
+
+    public void TouchDivide() {
+        if (ex.length() != 0) {
             char a = ex.charAt(ex.length() - 1);//Последний символ
-            if (a != '+' && a != '-' && a != '*' && a != '/'&& a != '('&&a != '.') {
+            if (a != '+' && a != '-' && a != '*' && a != '/' && a != '(' && a != '.') {
                 text.append("/");
-                ex+="/";
+                ex += "/";
                 dotAdd = false;
                 //добавляем деление и даём возможность вновь ставить точку
             }
         }
     }
-    public void TouchEqual(View w){
-        if (ex.length()!=0) {
+
+    public void TouchEqual() {
+        if (ex.length() != 0) {
             char a = ex.charAt(ex.length() - 1);//Последний символ
-            if (a != '+' && a != '-' && a != '*' && a != '/'&&a != '.') {
-                for (int i = 0; i <opened-closed ; i++) {
+            if (a != '+' && a != '-' && a != '*' && a != '/' && a != '.') {
+                for (int i = 0; i < opened - closed; i++) {
                     text.append(")");
                     ex += ")";
                     //закрываем все открытые скобки
                 }
 
-                text.append("="+result(ex)+"\n\n");
+                text.append("=" + result(ex) + "\n\n");
                 ex = "";
-                opened =0;
-                closed =0;
+                opened = 0;
+                closed = 0;
                 dotAdd = false;
                 //приводим всё в изначальный вид
             }
@@ -226,7 +450,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 return result(buffer.toString());
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             StringBuffer buffer = new StringBuffer("Ошибка");
             e.printStackTrace();
             //Что-то случилось...
@@ -234,21 +458,22 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void TouchDel(View w){
-        if (ex.length()!=0) {
+    public void TouchDel() {
+        if (ex.length() != 0) {
             char a = ex.charAt(ex.length() - 1);
-            if (a=='(') opened--;
-            else if (a==')') closed--;
+            if (a == '(') opened--;
+            else if (a == ')') closed--;
             text.setText(text.getText().toString().substring(0, text.getText().length() - 1));
             ex = ex.substring(0, ex.length() - 1);
 
             //удаляем последний символ
         }
     }
-    public void TouchDot(View w){
-        if (ex.length()!=0) {
+
+    public void TouchDot() {
+        if (ex.length() != 0) {
             char a = ex.charAt(ex.length() - 1);//Последний символ
-            if (a != '+' && a != '-' && a != '*' && a != '/'&&a != '('&&a != ')'&&a != '.'&&!dotAdd) {
+            if (a != '+' && a != '-' && a != '*' && a != '/' && a != '(' && a != ')' && a != '.' && !dotAdd) {
                 text.append(".");
                 ex += ".";
                 dotAdd = true;
