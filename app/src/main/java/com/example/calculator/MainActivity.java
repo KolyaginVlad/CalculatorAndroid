@@ -397,7 +397,7 @@ public class MainActivity extends AppCompatActivity {
             StringBuffer buffer = new StringBuffer(s);
             if (buffer.indexOf("(")==-1) {
                 //Если нет скобок...
-                Pattern pattern1 = Pattern.compile("-?[0-9]+?\\.?[0-9]*[*/]-?[0-9]+\\.?[0-9]*");//Проверяем наличие умножения или деления(раздельно нельзя)
+                Pattern pattern1 = Pattern.compile("-?[0-9]+\\.?[0-9]*[*/]-?[0-9]+\\.?[0-9]*");//Проверяем наличие умножения или деления(раздельно нельзя)
                 Matcher matcher1 = pattern1.matcher(buffer);
                 while (matcher1.find()) {
                     int start = matcher1.start();
@@ -414,7 +414,7 @@ public class MainActivity extends AppCompatActivity {
                     buffer.replace(start, end, k + "");
                     matcher1 = pattern1.matcher(buffer);//обновляем
                 }
-                Pattern pattern3 = Pattern.compile("-?[0-9]+?\\.?[0-9]*[+][0-9]+\\.?[0-9]*");//проверяем есть ли действие сложения
+                Pattern pattern3 = Pattern.compile("-?[0-9]+\\.?[0-9]*[+][0-9]+\\.?[0-9]*");//проверяем есть ли действие сложения
                 Matcher matcher3 = pattern3.matcher(buffer);
                 while (matcher3.find()) {
                     int start = matcher3.start();
@@ -425,7 +425,7 @@ public class MainActivity extends AppCompatActivity {
                     buffer.replace(start, end, k + "");
                     matcher3 = pattern3.matcher(buffer);//обновляем
                 }
-                Pattern pattern = Pattern.compile("-?[0-9]+?\\.?[0-9]*[-][0-9]+\\.?[0-9]*");//проверяем есть ли действие вычитания
+                Pattern pattern = Pattern.compile("-?[0-9]+\\.?[0-9]*[-][0-9]+\\.?[0-9]*");//проверяем есть ли действие вычитания
                 Matcher matcher = pattern.matcher(buffer);
                 while (matcher.find()) {
                     int start = matcher.start();
@@ -436,7 +436,7 @@ public class MainActivity extends AppCompatActivity {
                     split[1] = s1.substring(s1.lastIndexOf("-") + 1);
                     double k = Double.parseDouble(split[0]) - Double.parseDouble(split[1]);
                     buffer.replace(start, end, k + "");
-                    matcher3 = pattern3.matcher(buffer);//обновляем
+                    matcher = pattern.matcher(buffer);//обновляем
                 }
                 return buffer;
             }else {
