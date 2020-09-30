@@ -411,9 +411,19 @@ public class MainActivity extends AppCompatActivity {
                         String[] split = s1.split("/");
                         k = Double.parseDouble(split[0]) / Double.parseDouble(split[1]);
                     }
-                    if (k >= 0 && start != 0)
-                        buffer.replace(start, end, "+" + k + "");
-                    else buffer.replace(start, end, k + "");
+                    if (k >= 0 && start != 0) {
+                        char a = buffer.charAt(start - 1);
+                        if (a != '+' && a != '-' && a != '*' && a != '/') {
+                            buffer.replace(start, end, "+" + k + "");
+
+                        } else buffer.replace(start, end, k + "");
+                    } else if (k < 0 && start != 0) {
+                        char a = buffer.charAt(start - 1);
+                        if (a == '+')
+                            buffer.replace(start - 1, end, k + "");
+                        else buffer.replace(start, end, k + "");
+                    } else
+                        buffer.replace(start, end, k + "");
                     matcher1 = pattern1.matcher(buffer);//обновляем
                 }
                 Pattern pattern3 = Pattern.compile("-?[0-9]+?\\.?[0-9]*[+][0-9]+\\.?[0-9]*");//проверяем есть ли действие сложения
@@ -424,9 +434,19 @@ public class MainActivity extends AppCompatActivity {
                     String s1 = buffer.substring(start, end);
                     String[] split = s1.split("\\+");
                     double k = Double.parseDouble(split[0]) + Double.parseDouble(split[1]);
-                    if (k >= 0 && start != 0)
-                        buffer.replace(start, end, "+" + k + "");
-                    else buffer.replace(start, end, k + "");
+                    if (k >= 0 && start != 0) {
+                        char a = buffer.charAt(start - 1);
+                        if (a != '+' && a != '-' && a != '*' && a != '/') {
+                            buffer.replace(start, end, "+" + k + "");
+
+                        } else buffer.replace(start, end, k + "");
+                    } else if (k < 0 && start != 0) {
+                        char a = buffer.charAt(start - 1);
+                        if (a == '+')
+                            buffer.replace(start - 1, end, k + "");
+                        else buffer.replace(start, end, k + "");
+                    } else
+                        buffer.replace(start, end, k + "");
                     matcher3 = pattern3.matcher(buffer);//обновляем
                 }
                 Pattern pattern = Pattern.compile("-?[0-9]+?\\.?[0-9]*[-][0-9]+\\.?[0-9]*");//проверяем есть ли действие вычитания
@@ -439,21 +459,39 @@ public class MainActivity extends AppCompatActivity {
                     split[0] = s1.substring(0, s1.lastIndexOf("-"));
                     split[1] = s1.substring(s1.lastIndexOf("-") + 1);
                     double k = Double.parseDouble(split[0]) - Double.parseDouble(split[1]);
-                    if (k >= 0 && start != 0)
-                        buffer.replace(start, end, "+" + k + "");
-                    else buffer.replace(start, end, k + "");
+                    if (k >= 0 && start != 0) {
+                        char a = buffer.charAt(start - 1);
+                        if (a != '+' && a != '-' && a != '*' && a != '/') {
+                            buffer.replace(start, end, "+" + k + "");
+
+                        } else buffer.replace(start, end, k + "");
+                    } else if (k < 0 && start != 0) {
+                        char a = buffer.charAt(start - 1);
+                        if (a == '+')
+                            buffer.replace(start - 1, end, k + "");
+                        else buffer.replace(start, end, k + "");
+                    } else
+                        buffer.replace(start, end, k + "");
                     matcher = pattern.matcher(buffer);//обновляем
                 }
+
                 return buffer;
             }else {
                 //Если скобки есть...
                 Pattern pattern = Pattern.compile("\\([^(]*\\)");//Регулярка для нахождения ближайшей открывшейся и закрывшейся скобок
                 Matcher matcher = pattern.matcher(buffer);
-                while (matcher.find()){
+                while (matcher.find()) {
                     int start = matcher.start();
                     int end = matcher.end();
-                    String s1 = buffer.substring(start+1, end-1);
-                    buffer.replace(start, end, result(s1).toString());
+                    String s1 = buffer.substring(start + 1, end - 1);
+                    String s2 = result(s1).toString();
+                    if (s2.charAt(0) != '-' && buffer.charAt(start - 1) != '+' && buffer.charAt(start - 1) != '-')
+                        buffer.replace(start, end, s2);
+                    else if (s2.charAt(0) != '-' && buffer.charAt(start - 1) != '-')
+                        buffer.replace(start - 1, end, "+" + s2.substring(1));
+                    else if (s2.charAt(0) != '-' && buffer.charAt(start - 1) != '+')
+                        buffer.replace(start - 1, end, s2);
+                    else buffer.replace(start, end, s2);
                     matcher = pattern.matcher(buffer);//обновляем
                 }
                 return result(buffer.toString());
