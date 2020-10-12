@@ -1,5 +1,6 @@
 package com.example.calculator;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -13,8 +14,14 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.net.ssl.HttpsURLConnection;
 
 public class MainActivity extends AppCompatActivity {
     TextView text;
@@ -22,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     int opened;
     int closed;
     boolean dotAdd;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,9 +37,10 @@ public class MainActivity extends AppCompatActivity {
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
+        TextView textView = new TextView(this);
         text = new TextView(this);
         text.setWidth((int) (size.x * 0.94));
-        text.setHeight((int) (size.y * 0.6));
+        text.setHeight((int) (size.y * 0.5));
         text.setGravity(Gravity.BOTTOM | Gravity.RIGHT);
         text.setTextSize(34);
         text.setShadowLayer(5, 2, 2, Color.GRAY);
@@ -56,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         Button buttonClose = new Button(this);
         Button buttonEq = new Button(this);
         Button buttonDel = new Button(this);
+        Button logout = new Button(this);
         //
         button1.setText("1");
         button2.setText("2");
@@ -77,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
         buttonClose.setText(")");
         buttonEq.setText("=");
         buttonDel.setText("←");
+        logout.setText("Logout");
         //
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -198,10 +209,25 @@ public class MainActivity extends AppCompatActivity {
                 TouchEqual();
             }
         });
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, Register.class);
+                startActivity(intent);
+                finish();
+            }
+        });
         //
         ConstraintLayout layout = findViewById(R.id.lay);
         layout.addView(text);
         text.setX(size.x * 0.03f);
+        text.setY(size.y * 0.1f);
+        layout.addView(logout, (int) (size.x * 0.25), (int) (size.y * 0.1));
+        layout.addView(textView, (int) (size.x * 0.75), (int) (size.y * 0.1));
+        logout.setX(0);
+        logout.setY(0);
+        textView.setX((size.x * 0.25f));
+        textView.setY(0);
         GridLayout gridLayout = new GridLayout(this);
         gridLayout.setColumnCount(4);
         layout.addView(gridLayout, size.x, (int) (size.y * 0.4));
@@ -233,7 +259,10 @@ public class MainActivity extends AppCompatActivity {
         opened = 0;
         closed = 0;
         dotAdd = false;
+        textView.setText((String) getIntent().getSerializableExtra("login"));
+
     }
+
 
     public void Touch1() {
         text.append("1");
@@ -406,10 +435,12 @@ public class MainActivity extends AppCompatActivity {
                     double k;
                     if (s1.indexOf("/") == -1) {//если нет деления, то это умножение
                         String[] split = s1.split("\\*");
-                        k = Double.parseDouble(split[0]) * Double.parseDouble(split[1]);
+                        // k = Double.parseDouble(split[0]) * Double.parseDouble(split[1]);
+                        k = mul(Double.parseDouble(split[0]), Double.parseDouble(split[1]));
                     } else {
                         String[] split = s1.split("/");
-                        k = Double.parseDouble(split[0]) / Double.parseDouble(split[1]);
+                        // k = Double.parseDouble(split[0]) / Double.parseDouble(split[1]);
+                        k = del(Double.parseDouble(split[0]), Double.parseDouble(split[1]));
                     }
                     if (k >= 0 && start != 0) {
                         char a = buffer.charAt(start - 1);
@@ -433,7 +464,8 @@ public class MainActivity extends AppCompatActivity {
                     int end = matcher3.end();
                     String s1 = buffer.substring(start, end);
                     String[] split = s1.split("\\+");
-                    double k = Double.parseDouble(split[0]) + Double.parseDouble(split[1]);
+                    // double k = Double.parseDouble(split[0]) + Double.parseDouble(split[1]);
+                    double k = plus(Double.parseDouble(split[0]), Double.parseDouble(split[1]));
                     if (k >= 0 && start != 0) {
                         char a = buffer.charAt(start - 1);
                         if (a != '+' && a != '-' && a != '*' && a != '/') {
@@ -458,7 +490,8 @@ public class MainActivity extends AppCompatActivity {
                     String[] split = new String[2];
                     split[0] = s1.substring(0, s1.lastIndexOf("-"));
                     split[1] = s1.substring(s1.lastIndexOf("-") + 1);
-                    double k = Double.parseDouble(split[0]) - Double.parseDouble(split[1]);
+                    //double k = Double.parseDouble(split[0]) - Double.parseDouble(split[1]);
+                    double k = minus(Double.parseDouble(split[0]), Double.parseDouble(split[1]));
                     if (k >= 0 && start != 0) {
                         char a = buffer.charAt(start - 1);
                         if (a != '+' && a != '-' && a != '*' && a != '/') {
@@ -527,5 +560,153 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    public double plus(final double a, final double b) {
+        final double[] k = {0};
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                URL url;
+                HttpsURLConnection connection = null;
+
+                try {
+                    url = new URL("https://l12.scripthub.ru/api.php?module=plus&a=" + a + "&b=" + b);
+                    connection = (HttpsURLConnection) url.openConnection();
+                    BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+                    String line = br.readLine();
+                    //Log.d("HTTP-GET", line);
+                    k[0] = Double.parseDouble(line);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    if (connection != null) {
+                        connection.disconnect();
+
+                    }
+                }
+            }
+        });
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return k[0];
+    }
+
+    public double minus(final double a, final double b) {
+        final double[] k = {0};
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                URL url;
+                HttpsURLConnection connection = null;
+
+                try {
+                    url = new URL("https://l12.scripthub.ru/api.php?module=minus&a=" + a + "&b=" + b);
+                    connection = (HttpsURLConnection) url.openConnection();
+                    BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+                    String line = br.readLine();
+                    //Log.d("HTTP-GET", line);
+                    k[0] = Double.parseDouble(line);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    if (connection != null) {
+                        connection.disconnect();
+
+                    }
+                }
+            }
+        });
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
+        return k[0];
+    }
+
+    public double mul(final double a, final double b) {
+        final double[] k = {0};
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                URL url;
+                HttpsURLConnection connection = null;
+
+                try {
+                    url = new URL("https://l12.scripthub.ru/api.php?module=mul&a=" + a + "&b=" + b);
+                    connection = (HttpsURLConnection) url.openConnection();
+                    BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+                    String line = br.readLine();
+                    //Log.d("HTTP-GET", line);
+                    k[0] = Double.parseDouble(line);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    if (connection != null) {
+                        connection.disconnect();
+
+                    }
+                }
+            }
+        });
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return k[0];
+    }
+
+    public double del(final double a, final double b) {
+        final double[] k = {0};
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                URL url;
+                HttpsURLConnection connection = null;
+
+                try {
+                    url = new URL("https://l12.scripthub.ru/api.php?module=del&a=" + a + "&b=" + b);
+                    connection = (HttpsURLConnection) url.openConnection();
+                    BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+                    String line = br.readLine();
+                    //Log.d("HTTP-GET", line);
+                    k[0] = Double.parseDouble(line);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    if (connection != null) {
+                        connection.disconnect();
+
+                    }
+                }
+            }
+        });
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return k[0];
+    }
+
 
 }
